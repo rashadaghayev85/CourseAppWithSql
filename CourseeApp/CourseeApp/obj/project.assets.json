@@ -2079,11 +2079,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Rashad\\OneDrive\\Desktop\\PB101\\code\\CourseeApp\\CourseeApp\\CourseeApp.csproj",
+      "projectUniqueName": "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\CourseeApp\\CourseeApp.csproj",
       "projectName": "CourseeApp",
-      "projectPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\PB101\\code\\CourseeApp\\CourseeApp\\CourseeApp.csproj",
+      "projectPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\CourseeApp\\CourseeApp.csproj",
       "packagesPath": "C:\\Users\\Rashad\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\PB101\\code\\CourseeApp\\CourseeApp\\obj\\",
+      "outputPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\CourseeApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Rashad\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2100,8 +2100,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\Rashad\\OneDrive\\Desktop\\PB101\\code\\CourseeApp\\Service\\Service.csproj": {
-              "projectPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\PB101\\code\\CourseeApp\\Service\\Service.csproj"
+            "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\Service\\Service.csproj": {
+              "projectPath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\Service\\Service.csproj"
             }
           }
         }

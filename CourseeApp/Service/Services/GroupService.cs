@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Models;
 
 namespace Service.Services
 {
@@ -15,6 +16,16 @@ namespace Service.Services
         public GroupService()
         {
             _GroupRepo = new GroupRepository();
+        }
+
+        public Task CreateAsync(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Group>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
