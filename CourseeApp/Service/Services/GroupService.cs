@@ -12,20 +12,45 @@ namespace Service.Services
 {
     public class GroupService : IGroupService
     {
-        private readonly IGroupRepository _GroupRepo;
+        private readonly IGroupRepository _groupRepo;
         public GroupService()
         {
-            _GroupRepo = new GroupRepository();
+            _groupRepo = new GroupRepository();
         }
 
-        public Task CreateAsync(Group group)
+        public async Task CreateAsync(Group entity)
         {
-            throw new NotImplementedException();
+            await _groupRepo.CreateAsync(entity);
         }
 
-        public Task<List<Group>> GetAllAsync()
+        public async Task DeleteAsync(Group entity)
         {
-            throw new NotImplementedException();
+            await _groupRepo.DeleteAsync(entity);
+        }
+
+        public async Task<List<Group>> GetAllAsync()
+        {
+            return await _groupRepo.GetAllAsync();
+        }
+
+        public async Task<Group> GetByIdAsync(int id)
+        {
+            return await _groupRepo.GetByIdAsync(id);
+        }
+
+        public async Task<Group> GetByNameAsync(string name)
+        {
+            return await _groupRepo.GetByNameAsync(name);
+        }
+
+        public async Task<List<Group>> SearchByNameAsync(string searchText)
+        {
+            return await _groupRepo.SearchByNameAsync(searchText);
+        }
+
+        public async Task UpdateAsync(Group entity)
+        {
+            await _groupRepo.UpdateAsync(entity);
         }
     }
 }

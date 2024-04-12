@@ -17,11 +17,17 @@ namespace Repository.Repositories
         {
             _context = new AppDbContext();
         }
+
+        public async Task<Education> GetByNameAsync(string name)
+        {
+            return await _context.Educations.FirstOrDefaultAsync(m => m.Name == name);
+        }
+
         public async Task<List<Education>> SearchByNameAsync(string searchText)
         {
             return await _context.Educations.Where(m => m.Name.ToLower().Trim().Contains(searchText.ToLower().Trim())).ToListAsync();
         }
 
-
+      
     }
 }

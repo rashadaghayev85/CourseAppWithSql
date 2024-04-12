@@ -34,8 +34,14 @@ namespace CourseeApp.Controllers
         }
         public async Task CreateAsync()
         {
-             Console.WriteLine("Add Education");
+            Education:Console.WriteLine("Add Education");
              string name =Console.ReadLine();
+            var data = await _educationService.SearchByNameAsync(name);
+            if (data is not null)
+            {
+                ConsoleColor.Red.WriteConsole("The Education already exists ");
+                goto Education;
+            }
              Console.WriteLine("Add Education color");
              string color = Console.ReadLine();
 
@@ -43,7 +49,7 @@ namespace CourseeApp.Controllers
              DateTime time = DateTime.Now;
 
            
-            await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim(), CreatedDate =time });
+            await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), CreatedDate =time });
 
 
             await Console.Out.WriteLineAsync("Data succesfuly added");

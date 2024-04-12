@@ -40,6 +40,10 @@ namespace Service.Services
             return await _educationRepo.GetByIdAsync(id);
         }
 
+        public async Task<Education> GetByNameAsync(string name)
+        {
+            return await _educationRepo.GetByNameAsync(name);
+        }
 
         public async Task<List<Education>> SearchByNameAsync(string searchText)
         {

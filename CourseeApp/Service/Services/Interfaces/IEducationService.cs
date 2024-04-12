@@ -15,6 +15,6 @@ namespace Service.Services.Interfaces
         Task<Education> GetByIdAsync(int id);
         Task<List<Education>> GetAllAsync();
         Task<List<Education>> SearchByNameAsync(string searchText);
-
+        Task<Education> GetByNameAsync(string name);
     }
 }

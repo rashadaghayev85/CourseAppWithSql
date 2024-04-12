@@ -10,5 +10,6 @@ namespace Repository.Repositories.Interfaces
     public interface IEducationRepository:IBaseRepository<Education>
     {
         Task<List<Education>> SearchByNameAsync(string searchText);
+        Task<Education> GetByNameAsync(string name);
     }
 }

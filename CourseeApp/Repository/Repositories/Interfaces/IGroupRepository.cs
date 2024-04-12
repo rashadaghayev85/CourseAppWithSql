@@ -9,6 +9,7 @@ namespace Repository.Repositories.Interfaces
 {
     public interface IGroupRepository:IBaseRepository<Group>
     {
-        Task<List<Group>> SearchByName(string searchText);
+        Task<List<Group>> SearchByNameAsync(string searchText);
+        Task<Group> GetByNameAsync(string name);
     }
 }

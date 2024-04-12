@@ -17,7 +17,13 @@ namespace Repository.Repositories
         {
             _context = new AppDbContext();
         }
-        public async Task<List<Group>> SearchByName(string searchText)
+
+        public async Task<Group> GetByNameAsync(string name)
+        {
+            return await _context.Groups.FirstOrDefaultAsync(m => m.Name == name);
+        }
+
+        public async Task<List<Group>> SearchByNameAsync(string searchText)
         {
             return await _context.Groups.Where(m => m.Name.ToLower().Trim().Contains(searchText.ToLower().Trim())).ToListAsync();
         }

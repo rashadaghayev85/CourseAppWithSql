@@ -9,7 +9,13 @@ namespace Service.Services.Interfaces
 {
     public interface IGroupService
     {
+        Task CreateAsync(Group entity);
+        Task UpdateAsync(Group entity);
+        Task DeleteAsync(Group entity);
+        Task<Group> GetByIdAsync(int id);
         Task<List<Group>> GetAllAsync();
-        Task CreateAsync(Group group);
+        Task<List<Group>> SearchByNameAsync(string searchText);
+        Task<Group> GetByNameAsync(string name);
+
     }
 }
