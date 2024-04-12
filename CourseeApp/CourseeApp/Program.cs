@@ -10,9 +10,9 @@ EducationController educationController = new EducationController();
 //await educationController.GetAllAsync();
 
 GroupController groupController = new GroupController();
-//await groupController.GetAllAsync();
+await groupController.GetAllAsync();
 //await groupController.DeleteAsync();
 //await groupController.UpdateAsync();
 //await groupController.SearchByNameAsync();
-await groupController.CreateAsync();
+//await groupController.CreateAsync();
 //await groupController.GetByIdAsync();

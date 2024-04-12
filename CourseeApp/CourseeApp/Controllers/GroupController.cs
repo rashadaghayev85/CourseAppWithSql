@@ -77,7 +77,7 @@ namespace CourseeApp.Controllers
                 if (isCorrectCapacityFormat)
                 {
                     DateTime time = DateTime.Now;
-                    await _groupService.CreateAsync(new Group { Name = name.Trim().ToLower(), Education =education, Capacity = capacity, CreatedDate = time });
+                    await _groupService.CreateAsync(new Group { Name = name.Trim().ToLower(), EducationId =education.Id, Capacity = capacity, CreatedDate = time });
                     Console.WriteLine("Data succesfuly added");
                 }
                 else
