@@ -24,6 +24,7 @@ namespace Service.Helpers.Enums
         GroupGetById,
         GetAllGroupWithEducation,
         GroupSearchByName,
+        FilterByEducationName
 
     }
 }
