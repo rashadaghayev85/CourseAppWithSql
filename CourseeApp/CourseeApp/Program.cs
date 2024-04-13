@@ -1,6 +1,7 @@
 ﻿using CourseeApp.Controllers;
 using Service.Helpers.Extensions;
 using Service.Helpers.Enums;
+using Domain.Models;
 
 
 //await educationController.GetAllAsync();
@@ -30,83 +31,93 @@ EducationController educationController = new EducationController();
 
 GroupController groupController = new GroupController();
 
+UserController userController = new UserController();
 
-
+ConsoleColor.Cyan.WriteConsole("1-Register,2-Login");
+var response=await userController.Login();
 while (true)
 {
-    GetMenues();
-Operation: string operationStr = Console.ReadLine();
-
-    int operation;
-
-    bool isCorrectOperationFormat = int.TryParse(operationStr, out operation);
-    if (isCorrectOperationFormat)
+    if (response)
     {
-        switch (operation)
+        GetMenues();
+    Operation: string operationStr = Console.ReadLine();
+
+        int operation;
+
+        bool isCorrectOperationFormat = int.TryParse(operationStr, out operation);
+        if (isCorrectOperationFormat)
         {
-            case (int)OperationType.EducationCreate:
-                await educationController.CreateAsync();
-                break;
-            case (int)OperationType.EducationDelete:
-                await educationController.DeleteAsync();
-                break;
-            case (int)OperationType.EducationUpdate:
-                await educationController.UpdateAsync();
-                break;
+            switch (operation)
+            {
+                case (int)OperationType.EducationCreate:
+                    await educationController.CreateAsync();
+                    break;
+                case (int)OperationType.EducationDelete:
+                    await educationController.DeleteAsync();
+                    break;
+                case (int)OperationType.EducationUpdate:
+                    await educationController.UpdateAsync();
+                    break;
 
-            case (int)OperationType.EducationGetAll:
-                await educationController.GetAllAsync();
-                break;
-            case (int)OperationType.EducationGetAllWithGroup:
-                await educationController.GetAllWithGroupAsync();
-                break;
-            case (int)OperationType.EducationGetById:
-                await educationController.GetByIdAsync();
-                break;
+                case (int)OperationType.EducationGetAll:
+                    await educationController.GetAllAsync();
+                    break;
+                case (int)OperationType.EducationGetAllWithGroup:
+                    await educationController.GetAllWithGroupAsync();
+                    break;
+                case (int)OperationType.EducationGetById:
+                    await educationController.GetByIdAsync();
+                    break;
 
-            case (int)OperationType.EducationSortWithCreatedDate:
-                await educationController.SortWithCreatedDateAsync();
-                break;
-            case (int)OperationType.EducationSearchByName:
-                await educationController.SearchByNameAsync();
-                break;
-            case (int)OperationType.GroupCreate:
-                await groupController.CreateAsync();
-                break;
-            case (int)OperationType.GroupDelete:
-                await groupController.DeleteAsync();
-                break;
-            case (int)OperationType.GroupUpdate:
-                await groupController.UpdateAsync();
-                break;
-            case (int)OperationType.GroupGetAll:
-                await groupController.GetAllAsync();
-                break;
-            case (int)OperationType.GroupSortWithCapacity:
-                await groupController.GetAllGroupWithEducationAsync();
-                break;
-            case (int)OperationType.GroupGetById:
-                await groupController.GetByIdAsync();
-                break;
-            case (int)OperationType.GetAllGroupWithEducation:
-                await groupController.GetAllGroupWithEducationAsync();
-                break;
-            case (int)OperationType.GroupSearchByName:
-                await groupController.SearchByNameAsync();
-                break;
-            case (int)OperationType.FilterByEducationName:
-                await groupController.FilterByEducationNameAsync();
-                break;
-            default:
-                ConsoleColor.Red.WriteConsole("Operation is wrong, please choose again");
-                goto Operation;
+                case (int)OperationType.EducationSortWithCreatedDate:
+                    await educationController.SortWithCreatedDateAsync();
+                    break;
+                case (int)OperationType.EducationSearchByName:
+                    await educationController.SearchByNameAsync();
+                    break;
+                case (int)OperationType.GroupCreate:
+                    await groupController.CreateAsync();
+                    break;
+                case (int)OperationType.GroupDelete:
+                    await groupController.DeleteAsync();
+                    break;
+                case (int)OperationType.GroupUpdate:
+                    await groupController.UpdateAsync();
+                    break;
+                case (int)OperationType.GroupGetAll:
+                    await groupController.GetAllAsync();
+                    break;
+                case (int)OperationType.GroupSortWithCapacity:
+                    await groupController.GetAllGroupWithEducationAsync();
+                    break;
+                case (int)OperationType.GroupGetById:
+                    await groupController.GetByIdAsync();
+                    break;
+                case (int)OperationType.GetAllGroupWithEducation:
+                    await groupController.GetAllGroupWithEducationAsync();
+                    break;
+                case (int)OperationType.GroupSearchByName:
+                    await groupController.SearchByNameAsync();
+                    break;
+                case (int)OperationType.FilterByEducationName:
+                    await groupController.FilterByEducationNameAsync();
+                    break;
+                default:
+                    ConsoleColor.Red.WriteConsole("Operation is wrong, please choose again");
+                    goto Operation;
+            }
+        }
+        else
+        {
+            ConsoleColor.Red.WriteConsole("Operation format is wrong, please add operation again");
+            goto Operation;
         }
     }
     else
     {
-        ConsoleColor.Red.WriteConsole("Operation format is wrong, please add operation again");
-        goto Operation;
+        return 0;
     }
+   
 }
 static void GetMenues()
 {
@@ -119,8 +130,8 @@ static void GetMenues()
                                     "    | 3-Education Uptade               |" + "11-Group Update                  |\n" +
                                     "    | 4-Education Get All              |" + "12-Group Get All                 |\n" +
                                     "    | 5-Education Get All With Group   |" + "13-Group Sort With Capacity      |\n" +
-                                    "    | 6-Education Sort With CreatedDate|" + "14-Group Get By Id               |\n" +
-                                    "    | 7-Education Get By Id            |" + "15-Get All Group With Education  |\n" +
+                                    "    | 6-Education Get By Id            |" + "14-Group Get By Id               |\n" +
+                                    "    | 7-Education Sort With CreatedDate|" + "15-Get All Group With Education  |\n" +
                                     "    | 8-Education Search By Name       |" + "16-Group Search By Name          |\n" +
                                     "    |                                  |" + "17-Filter By Education Name Async|\n" +
                                     "    ----------------------------------------------------------------------\n");

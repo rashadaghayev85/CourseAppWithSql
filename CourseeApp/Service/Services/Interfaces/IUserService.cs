@@ -9,6 +9,7 @@ namespace Service.Services.Interfaces
 {
     public interface IUserService
     {
-        
+        Task<bool> Login(string emailOrUserName,string password);
+        Task Register(User user);
     }
 }

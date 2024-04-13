@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Models;
 
 namespace Service.Services
 {
@@ -15,6 +16,16 @@ namespace Service.Services
         public UserService()
         {
             _UserRepo = new UserRepository();
+        }
+
+        public async Task<bool> Login(string emailOrUserName,string password)
+        {
+            return await _UserRepo.Login(emailOrUserName,password);
+        }
+
+        public async Task Register(User user)
+        {
+            await _UserRepo.Register(user);
         }
     }
 }

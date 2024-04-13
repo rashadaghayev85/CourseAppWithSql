@@ -13,5 +13,6 @@ namespace Service.Helpers.Constants
         public const string SuccesOperation = "Operation succesfully";
         public const string IncorrectFormat = "Data format is wrong";
         public const string ProcessFinish = "Process finished";
+        public const string LoginFailed = "Login Failed";
     }
 }
