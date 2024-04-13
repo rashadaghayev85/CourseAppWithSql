@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FIDhrIK1AlF2VbIUS+Zrg8FKcoaW/Gp0//Sbd6gWFhl2PW5Z9aUBRhi8Wnk1qUvzoW/AfbzdLQJB6o3ag8VkyQ==",
+  "dgSpecHash": "W4/H5/G9aR7ZVUuxTUMZlzjOsAAZ/W2gdFkKefmJIGcqvgxIhEPZPPMB2WCRSSDbKcgofevV28Kauy4/r/rYAg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\CourseAppWithSql\\CourseeApp\\Service\\Service.csproj",
+  "projectFilePath": "C:\\Users\\Rashad\\OneDrive\\Desktop\\Ras\\CourseAppWithSql\\CourseeApp\\Service\\Service.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Rashad\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Rashad\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

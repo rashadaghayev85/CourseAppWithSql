@@ -111,18 +111,19 @@ Operation: string operationStr = Console.ReadLine();
 static void GetMenues()
 {
     ConsoleColor.Cyan.WriteConsole("Choose one operation :\n" +
-                                     "    -----------------------------------" + "--------------------------------\n" +
-                                    "    | Education options:               |" + "Group options:                  |\n" +
-                                    "    |----------------------------------|" + "--------------------------------|\n" +
-                                    "    | 1-Education Create               |" + "9-Group Create                  |\n" +
-                                    "    | 2-Education Delete               |" + "10-Group Delete                 |\n" +
-                                    "    | 3-Education Uptade               |" + "11-Group Update                 |\n" +
-                                    "    | 4-Education Get All              |" + "12-Group Get All                |\n" +
-                                    "    | 5-Education Get All With Group   |" + "13-Group Sort With Capacity     |\n" +
-                                    "    | 6-Education Sort With CreatedDate|" + "14-Group Get By Id              |\n" +
-                                    "    | 7-Education Get By Id            |" + "15-Get All Group With Education |\n" +
-                                    "    | 8-Education Search By Name       |" + "16-Group Search By Name         |\n" +
-                                    "    --------------------------------------------------------------------------\n");
+                                     "    -----------------------------------" + "---------------------------------\n" +
+                                    "    | Education options:               |" + "Group options:                   |\n" +
+                                    "    |----------------------------------|" + "---------------------------------|\n" +
+                                    "    | 1-Education Create               |" + "9-Group Create                   |\n" +
+                                    "    | 2-Education Delete               |" + "10-Group Delete                  |\n" +
+                                    "    | 3-Education Uptade               |" + "11-Group Update                  |\n" +
+                                    "    | 4-Education Get All              |" + "12-Group Get All                 |\n" +
+                                    "    | 5-Education Get All With Group   |" + "13-Group Sort With Capacity      |\n" +
+                                    "    | 6-Education Sort With CreatedDate|" + "14-Group Get By Id               |\n" +
+                                    "    | 7-Education Get By Id            |" + "15-Get All Group With Education  |\n" +
+                                    "    | 8-Education Search By Name       |" + "16-Group Search By Name          |\n" +
+                                    "    |                                  |" + "17-Filter By Education Name Async|\n" +
+                                    "    ----------------------------------------------------------------------\n");
 
 
 }

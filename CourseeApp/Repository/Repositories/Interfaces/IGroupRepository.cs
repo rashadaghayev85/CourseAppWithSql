@@ -18,6 +18,8 @@ namespace Repository.Repositories.Interfaces
         Task Delete(int id);
         Task<List<Group>> SortWithCapacityAsync(string text);
         Task<List<Group>>GetGroupByEducationIdAsync(int id);
+
+        
         
     }
 }

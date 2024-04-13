@@ -288,29 +288,29 @@ namespace CourseeApp.Controllers
         }
         public async Task FilterByEducationNameAsync()
         {
-            var datas = await _educationService.GetAllAsync();  
+            
+
+            var datas = await _educationService.GetAllAsync();
             foreach (var data in datas)
             {
-                Console.WriteLine("Id-"+data.Id+" Education-"+data.Name);
+                Console.WriteLine("Id-" + data.Id + " Education-" + data.Name);
             }
-            Id: ConsoleColor.Yellow.WriteConsole("Add Education Id");
-            string idStr = Console.ReadLine();
-            int id;
-            bool isCorrectIdFormat = int.TryParse(idStr, out id);
-            if (isCorrectIdFormat)
+        Id: ConsoleColor.Yellow.WriteConsole("Add Education Name");
+            string name = Console.ReadLine();
+            
+                var response = await _educationService.SearchByNameAsync(name);
+            foreach (var item in response)
             {
-                var data = await _groupService.GetGroupByEducationIdAsync(id);
-                foreach (var item in data)
-                {
-                    Console.WriteLine(item.Name);
-                }
                
+                var education = await _groupService.GetByIdAsync(item.Id);
+               
+                    Console.WriteLine("Group-" + education.Name + " Capacity-" + education.Capacity  + " CreatedDate-" + education.CreatedDate);
+
+         
+
             }
-            else
-            {
-                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
-                goto Id;
-            }
+
+
         }
     }
 }
