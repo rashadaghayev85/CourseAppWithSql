@@ -55,6 +55,11 @@ namespace Service.Services
             return await _groupRepo.GetByNameAsync(name);
         }
 
+        public async Task<List<Group>> GetGroupByEducationIdAsync(int id)
+        {
+            return await _groupRepo.GetGroupByEducationIdAsync(id);
+        }
+
         public async Task<List<Group>> SearchByNameAsync(string searchText)
         {
             return await _groupRepo.SearchByNameAsync(searchText);

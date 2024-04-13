@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Xml;
-using Repository.DTOs.Group;
+using Repository.DTOs.Education;
 
 namespace Service.Services
 {

@@ -20,6 +20,7 @@ namespace Service.Services.Interfaces
         Task<List<GroupWithEducationDto>> GetAllWithEducationAsync();
         Task DeleteByIdAsync(int id);
         Task<List<Group>> SortWithCapacityAsync(string text);
+        Task<List<Group>> GetGroupByEducationIdAsync(int id);
 
     }
 }

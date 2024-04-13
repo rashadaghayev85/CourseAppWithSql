@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Data;
+using Repository.DTOs.Education;
 using Repository.DTOs.Group;
 using Repository.Repositories.Interfaces;
 using System;
@@ -21,8 +22,8 @@ namespace Repository.Repositories
 
         public async Task<List<GroupWithEducationDto>> GetAllWithEducationAsync()
         {
-            var countries = await _context.Groups.Include(m => m.Education).ToListAsync();
-            var datas = countries.Select(m => new GroupWithEducationDto
+            var groups = await _context.Groups.Include(m => m.Education).ToListAsync();
+            var datas = groups.Select(m => new GroupWithEducationDto
             {
                 Group = m.Name,
                 Education = m.Education.Name
@@ -58,6 +59,11 @@ namespace Repository.Repositories
             {
                 throw new Exception("Incorrect Operation");
             }
+        }
+
+        public async Task<List<Group>> GetGroupByEducationIdAsync(int id)
+        {
+            return await _context.Groups.Where(m=>m.EducationId==id).ToListAsync();
         }
     }
 }

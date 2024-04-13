@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Repository.DTOs.Education;
 using Repository.DTOs.Group;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace Repository.Repositories.Interfaces
 
         Task Delete(int id);
         Task<List<Group>> SortWithCapacityAsync(string text);
+        Task<List<Group>>GetGroupByEducationIdAsync(int id);
+        
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Data;
-using Repository.DTOs.Group;
+using Repository.DTOs.Education;
 using Repository.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;

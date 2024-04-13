@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.DTOs.Group
+namespace Repository.DTOs.Education
 {
     public class EducationWithGroupsDto
     {

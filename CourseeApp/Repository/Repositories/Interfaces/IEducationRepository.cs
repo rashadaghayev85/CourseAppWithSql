@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Repository.DTOs.Group;
+using Repository.DTOs.Education;
 using System;
 using System.Collections.Generic;
 using System.Linq;

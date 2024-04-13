@@ -291,9 +291,26 @@ namespace CourseeApp.Controllers
             var datas = await _educationService.GetAllAsync();  
             foreach (var data in datas)
             {
-                Console.WriteLine();
+                Console.WriteLine("Id-"+data.Id+" Education-"+data.Name);
             }
-            ConsoleColor.Yellow.WriteConsole("Add Education Name");
+            Id: ConsoleColor.Yellow.WriteConsole("Add Education Id");
+            string idStr = Console.ReadLine();
+            int id;
+            bool isCorrectIdFormat = int.TryParse(idStr, out id);
+            if (isCorrectIdFormat)
+            {
+                var data = await _groupService.GetGroupByEducationIdAsync(id);
+                foreach (var item in data)
+                {
+                    Console.WriteLine(item.Name);
+                }
+               
+            }
+            else
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                goto Id;
+            }
         }
     }
 }
