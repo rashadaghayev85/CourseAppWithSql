@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Models;
+using Repository.DTOs.Group;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services
 {
@@ -28,9 +30,19 @@ namespace Service.Services
             await _groupRepo.DeleteAsync(entity);
         }
 
+        public async Task DeleteByIdAsync(int id)
+        {
+            await _groupRepo.Delete(id);
+        }
+
         public async Task<List<Group>> GetAllAsync()
         {
             return await _groupRepo.GetAllAsync();
+        }
+
+        public async Task<List<GroupWithEducationDto>> GetAllWithEducationAsync()
+        {
+            return await _groupRepo.GetAllWithEducationAsync();
         }
 
         public async Task<Group> GetByIdAsync(int id)
@@ -46,6 +58,11 @@ namespace Service.Services
         public async Task<List<Group>> SearchByNameAsync(string searchText)
         {
             return await _groupRepo.SearchByNameAsync(searchText);
+        }
+
+        public async Task<List<Group>> SortWithCapacityAsync(string text)
+        {
+            return await _groupRepo.SortWithCapacityAsync(text);
         }
 
         public async Task UpdateAsync(Group entity)

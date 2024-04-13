@@ -17,10 +17,12 @@ namespace CourseeApp.Controllers
     public class EducationController
     {
         private readonly IEducationService _educationService;
-      
+        private readonly GroupService _groupService;
+
         public EducationController()
         {
             _educationService = new EducationService();
+            _groupService = new GroupService();
            
         }
         public async Task GetAllAsync()
@@ -32,12 +34,24 @@ namespace CourseeApp.Controllers
             }
             
         }
+        public async Task GetAllWithGroupAsync()
+        {
+            var educations = await _educationService.GetEducationWithGroupsAsync();
+
+
+            foreach (var item in educations)
+            {
+                string result = item.Education + "-" + string.Join(",", item.Groups);
+                Console.WriteLine(result);
+            }
+
+        }
         public async Task CreateAsync()
         {
             Education:Console.WriteLine("Add Education");
              string name =Console.ReadLine();
             var data = await _educationService.SearchByNameAsync(name);
-            if (data is not null)
+            if (data.Count!=0)
             {
                 ConsoleColor.Red.WriteConsole("The Education already exists ");
                 goto Education;
@@ -52,7 +66,7 @@ namespace CourseeApp.Controllers
             await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), CreatedDate =time });
 
 
-            await Console.Out.WriteLineAsync("Data succesfuly added");
+           ConsoleColor.Green.WriteConsole("Data succesfuly added");
         }
 
         public async Task DeleteAsync()
@@ -190,6 +204,17 @@ namespace CourseeApp.Controllers
             {
                 Console.WriteLine("Education-"+item.Name+" Color-"+item.Color+" CreatedDate-"+item.CreatedDate);
             }
+        }
+        public async Task SortWithCreatedDateAsync()
+        {
+            ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
+            string text=Console.ReadLine();
+            var datas =await _educationService.SortWithCreatedDateAsync(text);
+            foreach (var data in datas)
+            {
+                Console.WriteLine("Name-"+data.Name+" Color-"+data.Color+" CreateDate-"+data.CreatedDate);
+            }
+           
         }
 
 

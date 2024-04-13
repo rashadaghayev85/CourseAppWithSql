@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Data;
 using Repository.Repositories.Interfaces;
@@ -50,5 +51,6 @@ namespace Repository.Repositories
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
     }
 }

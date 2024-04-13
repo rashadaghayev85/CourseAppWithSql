@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Repository.DTOs.Group;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,9 @@ namespace Service.Services.Interfaces
         Task<List<Group>> GetAllAsync();
         Task<List<Group>> SearchByNameAsync(string searchText);
         Task<Group> GetByNameAsync(string name);
+        Task<List<GroupWithEducationDto>> GetAllWithEducationAsync();
+        Task DeleteByIdAsync(int id);
+        Task<List<Group>> SortWithCapacityAsync(string text);
 
     }
 }

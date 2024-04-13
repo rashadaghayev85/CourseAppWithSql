@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Xml;
+using Repository.DTOs.Group;
 
 namespace Service.Services
 {
@@ -45,9 +46,19 @@ namespace Service.Services
             return await _educationRepo.GetByNameAsync(name);
         }
 
+        public async Task<List<EducationWithGroupsDto>> GetEducationWithGroupsAsync()
+        {
+            return await _educationRepo.GetAllWithGroupAsync();
+        }
+
         public async Task<List<Education>> SearchByNameAsync(string searchText)
         {
             return await _educationRepo.SearchByNameAsync(searchText);
+        }
+
+        public async Task<List<Education>> SortWithCreatedDateAsync(string text)
+        {
+            return await _educationRepo.SortWithCreatedDateAsync(text);
         }
 
         public async Task UpdateAsync(Education entity)

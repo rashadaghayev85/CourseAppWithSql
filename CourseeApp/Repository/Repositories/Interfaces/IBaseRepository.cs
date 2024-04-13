@@ -15,6 +15,7 @@ namespace Repository.Repositories.Interfaces
         Task <T> GetByIdAsync(int id);
         Task<List<T>> GetAllAsync();
        
+       
 
         //GetAll, GetById, Delete, Update, Search
     }

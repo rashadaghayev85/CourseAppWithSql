@@ -9,6 +9,7 @@ using Domain.Models;
 using Service.Helpers.Constants;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
+using Repository.DTOs.Group;
 
 namespace CourseeApp.Controllers
 {
@@ -27,11 +28,22 @@ namespace CourseeApp.Controllers
         public async Task GetAllAsync()
         {
             var data = await _groupService.GetAllAsync();
+            
             foreach (var item in data)
             {
-                Console.WriteLine("Group-" + item.Name + " Capacity-" + item.Capacity + " Education-"+item.Education+" CreatedDate-" + item.CreatedDate);
+                var education = await _educationService.GetByIdAsync(item.EducationId);
+                Console.WriteLine("Group-" + item.Name + " Capacity-" + item.Capacity + " Education-"+education.Name+" CreatedDate-" + item.CreatedDate);
             }
 
+        }
+        public async Task GetAllGroupWithEducationAsync()
+        {
+            var groups = await _groupService.GetAllWithEducationAsync();
+            foreach (var item in groups)
+            {
+                string result = item.Group + "-" + string.Join(",", item.Education);
+                Console.WriteLine(result);
+            }
         }
         public async Task CreateAsync()
         {
@@ -77,8 +89,10 @@ namespace CourseeApp.Controllers
                 if (isCorrectCapacityFormat)
                 {
                     DateTime time = DateTime.Now;
+                  //DateOnly time=new DateOnly();
+                    
                     await _groupService.CreateAsync(new Group { Name = name.Trim().ToLower(), EducationId =education.Id, Capacity = capacity, CreatedDate = time });
-                    Console.WriteLine("Data succesfuly added");
+                    ConsoleColor.Green.WriteConsole("Data succesfuly added");
                 }
                 else
                 {
@@ -103,8 +117,9 @@ namespace CourseeApp.Controllers
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
             if (isCorrectIdFormat)
             {
-                var response = await _groupService.GetByIdAsync(id);
-                _groupService.DeleteAsync(response);
+                Group response = await _groupService.GetByIdAsync(id);
+               await _groupService.DeleteAsync(response);
+                ConsoleColor.Green.WriteConsole(ResponseMessages.SuccesOperation);
             }
             else
             {
@@ -149,6 +164,7 @@ namespace CourseeApp.Controllers
                 try
                 {
                     var data = _groupService.GetByIdAsync(id);
+                     //Console.WriteLine(data.Result.Name);
                     if (data is null)
                     {
                         throw new NotFoundException(ResponseMessages.DataNotFound);
@@ -172,13 +188,13 @@ namespace CourseeApp.Controllers
                     Console.WriteLine("Enter new Education");
                     string newEducation = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newEducation))
-                    {                                              
-                            if (data.Result.Name.ToLower().Trim() != newEducation.ToLower().Trim())
-                            {
-                                data.Result.Name = newEducation;
-                                update = false;
-                            }
-                      
+                    {
+                        if (data.Result.Education.Name.ToLower().Trim() != newEducation.ToLower().Trim())
+                        {
+                            data.Result.Education.Name = newEducation;
+                            update = false;
+                        }
+
 
                     }
                     Console.WriteLine("Enter new capacity");
@@ -189,13 +205,13 @@ namespace CourseeApp.Controllers
                         bool isCorrectCapacityFormat = int.TryParse(capacityStr, out capacity);
                         if (isCorrectCapacityFormat)
                         {
-                            
-                                if (data.Result.Capacity != capacity)
-                                {
-                                    data.Result.Capacity = capacity;
-                                    update = false;
-                                }
-                            
+
+                            if (data.Result.Capacity != capacity)
+                            {
+                                data.Result.Capacity = capacity;
+                                update = false;
+                            }
+
                         }
                     }
 
@@ -208,6 +224,8 @@ namespace CourseeApp.Controllers
                         data.Result.CreatedDate = DateTime.Now;
                         _groupService.UpdateAsync(data.Result);
                         ConsoleColor.Green.WriteConsole("Data update succes");
+
+                        //Console.WriteLine(_groupService.GetAllAsync().Result);//.Capacity);
                     }
 
                 }
@@ -233,13 +251,49 @@ namespace CourseeApp.Controllers
 
         public async Task SearchByNameAsync()
         {
-            Console.WriteLine("Enter search text");
-            string seacrhText = Console.ReadLine();
-            var data = await _groupService.SearchByNameAsync(seacrhText);
-            foreach (var item in data)
+            try
             {
-                Console.WriteLine("Group-" + item.Name + " Education-" + item.Education + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
+                Console.WriteLine("Enter search text");
+                string seacrhText = Console.ReadLine();
+                var data = await _groupService.SearchByNameAsync(seacrhText);
+                foreach (var item in data)
+                {
+                    Console.WriteLine("Group-" + item.Name + " Education-" + item.Education + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
+                }
             }
+            catch (Exception ex)
+            {
+
+                ConsoleColor.Red.WriteConsole(ex.Message);
+            }
+           
+        }
+        public async Task SortWithCapacityAsync()
+        {
+            try
+            {
+                ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
+                string text = Console.ReadLine();
+                var datas = await _groupService.SortWithCapacityAsync(text);
+                foreach (var data in datas)
+                {
+                    Console.WriteLine("Name-" + data.Name + " CreateDate-" + data.Capacity);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ConsoleColor.Red.WriteConsole(ex.Message);
+            }
+        }
+        public async Task FilterByEducationNameAsync()
+        {
+            var datas = await _educationService.GetAllAsync();  
+            foreach (var data in datas)
+            {
+                Console.WriteLine();
+            }
+            ConsoleColor.Yellow.WriteConsole("Add Education Name");
         }
     }
 }
