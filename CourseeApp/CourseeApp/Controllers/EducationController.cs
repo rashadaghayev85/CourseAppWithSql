@@ -12,6 +12,7 @@ using Service.Helpers.Extensions;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Constants;
 using System.Xml.Linq;
+using System.Drawing;
 
 namespace CourseeApp.Controllers
 {
@@ -67,8 +68,16 @@ namespace CourseeApp.Controllers
                     ConsoleColor.Red.WriteConsole("Input can't be empty");
                     goto Education;
                 }
-                var data = await _educationService.SearchByNameAsync(name);
-                if (data.Count != 0)
+                foreach (var item in name)
+                {
+                    if (char.IsDigit(item) || char.IsPunctuation(item) || char.IsSymbol(item))
+                    {
+                        ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                        goto Education;
+                    }
+                }
+                var data = await _educationService.GetByNameAsync(name);
+                if (data is not null)
                 {
                     ConsoleColor.Red.WriteConsole("The Education already exists ");
                     goto Education;
@@ -80,11 +89,16 @@ namespace CourseeApp.Controllers
                     ConsoleColor.Red.WriteConsole("Input can't be empty");
                     goto Color;
                 }
-
+                  var col = await _educationService.GetByColorAsync(color);
+                if (col!= null)
+                {
+                    ConsoleColor.Red.WriteConsole("This color cannot be selected");
+                    goto Color;
+                }
                 DateTime time = DateTime.Now;
 
 
-                await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), CreatedDate = time });
+                await _educationService.CreateAsync(new Education { Name = name, Color = color.Trim().ToLower(), CreatedDate = time });
 
 
                 ConsoleColor.Green.WriteConsole("Data succesfuly added");
@@ -107,7 +121,7 @@ namespace CourseeApp.Controllers
                     Console.WriteLine("Id-" + item.Id + " Name-" + item.Name + " CreatedDate-" + item.CreatedDate);
                 }
 
-            Id: Console.WriteLine("Select the id you want to delete");
+            Id: ConsoleColor.Yellow.WriteConsole("Select the id you want to delete");
                 string idStr = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(idStr))
                 {
@@ -132,6 +146,7 @@ namespace CourseeApp.Controllers
                 }
                 else
                 {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
                     goto Id;
                 }
             }
@@ -148,7 +163,12 @@ namespace CourseeApp.Controllers
         {
          try
            {
-            Id: Console.WriteLine("Add Id");
+                var edu=await _educationService.GetAllAsync();
+                foreach (var item in edu)
+                {
+                    ConsoleColor.DarkMagenta.WriteConsole("Id-"+item.Id+" Name-"+item.Name);
+                }
+            Id: ConsoleColor.Yellow.WriteConsole("Enter Id");
                 string idStr = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(idStr))
                 {
@@ -205,19 +225,20 @@ namespace CourseeApp.Controllers
                 try
                 {
                     var data = _educationService.GetByIdAsync(id);
-                    if (data is null)
+                    if (data.Result is null)
                     {
-                        throw new NotFoundException(ResponseMessages.DataNotFound);
+                        ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                        return;
                         //ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                     }
                     Console.WriteLine("Enter new Education ");
                     string newEducation = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newEducation))
                     {
-                        var response = await _educationService.SearchByNameAsync(newEducation);
-                        if (response.Count==0)
+                        var response = await _educationService.GetByNameAsync(newEducation);
+                        if (response is null)
                         {
-                            if (data.Result.Name.ToLower().Trim() != newEducation.ToLower().Trim())
+                            if (data.Result.Name != newEducation)
                             {
                                 data.Result.Name = newEducation;
                                 update = false;
@@ -225,10 +246,18 @@ namespace CourseeApp.Controllers
                         }
 
                     }
-                    Console.WriteLine("Enter new color");
+                    Color:Console.WriteLine("Enter new color");
                     string newColor = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newColor))
                     {
+                        foreach (var item in newColor)
+                        {
+                            if (char.IsDigit(item) || char.IsPunctuation(item) || char.IsSymbol(item))
+                            {
+                                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                                goto Color;
+                            }
+                        }
                         if (data.Result.Color.ToLower().Trim() != newColor.ToLower().Trim())
                         {
                             data.Result.Color = newColor;

@@ -12,6 +12,7 @@ using Service.Helpers.Extensions;
 using Repository.DTOs.Group;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Repository.Migrations;
 
 namespace CourseeApp.Controllers
 {
@@ -72,6 +73,12 @@ namespace CourseeApp.Controllers
         }
         public async Task CreateAsync()
         {
+            var edu=await _educationService.GetAllAsync();
+            if (edu.Count==0)
+            {
+                ConsoleColor.Red.WriteConsole("You cannot create a group because there is no education");
+                return;
+            }
             GroupName: Console.WriteLine("Add Group Name");
             string name = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(name))
@@ -212,7 +219,7 @@ namespace CourseeApp.Controllers
                      //Console.WriteLine(data.Result.Name);
                     if (data is null)
                     {
-                        throw new NotFoundException(ResponseMessages.DataNotFound);
+                        ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                         //ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                     }
                     Group:Console.WriteLine("Enter new Group name ");

@@ -116,7 +116,7 @@ namespace CourseeApp.Controllers
             }
             else
             {
-                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                ConsoleColor.Red.WriteConsole("The length of the password should not be less than 8");
                 goto Password;
             }
 

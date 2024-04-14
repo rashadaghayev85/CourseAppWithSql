@@ -14,5 +14,7 @@ namespace Repository.Repositories.Interfaces
         Task<Education> GetByNameAsync(string name);
         Task<List<EducationWithGroupsDto>> GetAllWithGroupAsync();
         Task<List<Education>> SortWithCreatedDateAsync(string text);
+
+        Task<Education> GetByColor(string color);
     }
 }

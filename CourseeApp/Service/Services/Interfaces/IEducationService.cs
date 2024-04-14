@@ -19,5 +19,6 @@ namespace Service.Services.Interfaces
         Task<Education> GetByNameAsync(string name);
         Task<List<EducationWithGroupsDto>>GetEducationWithGroupsAsync();
         Task<List<Education>> SortWithCreatedDateAsync(string text);
+        Task<Education> GetByColorAsync(string color);
     }
 }

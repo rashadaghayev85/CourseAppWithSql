@@ -44,7 +44,7 @@ namespace Repository.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-       
+        
 
         public async Task UpdateAsync(T entity)
         {

@@ -36,6 +36,11 @@ namespace Service.Services
             return await _educationRepo.GetAllAsync();
         }
 
+        public async Task<Education> GetByColorAsync(string color)
+        {
+            return await _educationRepo.GetByColor(color);
+        }
+
         public async Task<Education> GetByIdAsync(int id)
         {
             return await _educationRepo.GetByIdAsync(id);

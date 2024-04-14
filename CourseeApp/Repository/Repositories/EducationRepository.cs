@@ -30,6 +30,11 @@ namespace Repository.Repositories
             return datas.ToList();
         }
 
+        public async Task<Education> GetByColor(string color)
+        {
+            return await _context.Educations.FirstOrDefaultAsync(m=>m.Color==color);
+        }
+
         public async Task<Education> GetByNameAsync(string name)
         {
             return await _context.Educations.FirstOrDefaultAsync(m => m.Name == name);

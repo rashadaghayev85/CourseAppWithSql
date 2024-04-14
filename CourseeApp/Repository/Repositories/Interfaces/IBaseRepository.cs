@@ -14,8 +14,10 @@ namespace Repository.Repositories.Interfaces
         Task DeleteAsync(T entity);
         Task <T> GetByIdAsync(int id);
         Task<List<T>> GetAllAsync();
-       
-       
+        
+
+
+
 
         //GetAll, GetById, Delete, Update, Search
     }
