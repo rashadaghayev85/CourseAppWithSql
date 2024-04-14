@@ -277,8 +277,16 @@ namespace CourseeApp.Controllers
                     string newEducation = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newEducation))
                     {
-                        var edu = await _educationService.SearchByNameAsync(newEducation);
-                        if (edu.Count != 0)
+                        foreach (var item in newEducation)
+                        {
+                            if (char.IsDigit(item) || char.IsPunctuation(item) || char.IsSymbol(item))
+                            {
+                                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                                goto Education;
+                            }
+                        }
+                        var edu = await _educationService.GetByNameAsync(newEducation);
+                        if (edu is not null)
                         {
                             if (data.Result.Education.Name.ToLower().Trim() != newEducation.ToLower().Trim())
                             {
