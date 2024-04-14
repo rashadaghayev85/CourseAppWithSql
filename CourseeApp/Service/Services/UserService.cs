@@ -12,20 +12,35 @@ namespace Service.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _UserRepo;
+        private readonly IUserRepository _userRepo;
         public UserService()
         {
-            _UserRepo = new UserRepository();
+            _userRepo = new UserRepository();
+        }
+
+        public async Task DeleteAsync(User entity)
+        {
+            await _userRepo.DeleteAsync(entity);
+        }
+
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await _userRepo.GetAllAsync();
+        }
+
+        public async Task<User> GetByUsernameOrEmailAsync(string usernameOrEmail)
+        {
+            return await _userRepo.GetByUsernameOrEmailAsync(usernameOrEmail);
         }
 
         public async Task<bool> Login(string emailOrUserName,string password)
         {
-            return await _UserRepo.Login(emailOrUserName,password);
+            return await _userRepo.Login(emailOrUserName,password);
         }
 
         public async Task Register(User user)
         {
-            await _UserRepo.Register(user);
+            await _userRepo.CreateAsync(user);
         }
     }
 }

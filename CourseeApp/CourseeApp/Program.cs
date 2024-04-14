@@ -33,8 +33,19 @@ GroupController groupController = new GroupController();
 
 UserController userController = new UserController();
 
-ConsoleColor.Cyan.WriteConsole("1-Register,2-Login");
-var response=await userController.Login();
+Home: ConsoleColor.Cyan.WriteConsole("1-Register,2-Login,3-Log Out");
+string result=Console.ReadLine();
+if (result == "1")
+{
+    await userController.Register();
+    goto Home;
+}
+else if (result == "2")
+{
+    var response = await userController.Login();
+
+
+
 while (true)
 {
     if (response)
@@ -88,13 +99,13 @@ while (true)
                     await groupController.GetAllAsync();
                     break;
                 case (int)OperationType.GroupSortWithCapacity:
-                    await groupController.GetAllGroupWithEducationAsync();
+                    await groupController.SortWithCapacityAsync();
                     break;
                 case (int)OperationType.GroupGetById:
                     await groupController.GetByIdAsync();
                     break;
-                case (int)OperationType.GetAllGroupWithEducation:
-                    await groupController.GetAllGroupWithEducationAsync();
+                case (int)OperationType.GetAllGroupWithEducationId:
+                    await groupController.GetAllGroupWithEducationIdAsync();
                     break;
                 case (int)OperationType.GroupSearchByName:
                     await groupController.SearchByNameAsync();
@@ -115,25 +126,32 @@ while (true)
     }
     else
     {
-        return 0;
+        ConsoleColor.Red.WriteConsole("Login Failed");
+            goto Home;
+
     }
    
+}
+}
+else
+{
+    return 0;
 }
 static void GetMenues()
 {
     ConsoleColor.Cyan.WriteConsole("Choose one operation :\n" +
-                                     "    -----------------------------------" + "---------------------------------\n" +
-                                    "    | Education options:               |" + "Group options:                   |\n" +
-                                    "    |----------------------------------|" + "---------------------------------|\n" +
-                                    "    | 1-Education Create               |" + "9-Group Create                   |\n" +
-                                    "    | 2-Education Delete               |" + "10-Group Delete                  |\n" +
-                                    "    | 3-Education Uptade               |" + "11-Group Update                  |\n" +
-                                    "    | 4-Education Get All              |" + "12-Group Get All                 |\n" +
-                                    "    | 5-Education Get All With Group   |" + "13-Group Sort With Capacity      |\n" +
-                                    "    | 6-Education Get By Id            |" + "14-Group Get By Id               |\n" +
-                                    "    | 7-Education Sort With CreatedDate|" + "15-Get All Group With Education  |\n" +
-                                    "    | 8-Education Search By Name       |" + "16-Group Search By Name          |\n" +
-                                    "    |                                  |" + "17-Filter By Education Name Async|\n" +
+                                     "    -----------------------------------" + "----------------------------------\n" +
+                                    "    | Education options:               |" + "Group options:                    |\n" +
+                                    "    |----------------------------------|" + "----------------------------------|\n" +
+                                    "    | 1-Education Create               |" + "9-Group Create                    |\n" +
+                                    "    | 2-Education Delete               |" + "10-Group Delete                   |\n" +
+                                    "    | 3-Education Uptade               |" + "11-Group Update                   |\n" +
+                                    "    | 4-Education Get All              |" + "12-Group Get All                  |\n" +
+                                    "    | 5-Education Get All With Group   |" + "13-Group Sort With Capacity       |\n" +
+                                    "    | 6-Education Get By Id            |" + "14-Group Get By Id                |\n" +
+                                    "    | 7-Education Sort With CreatedDate|" + "15-Get All Group With Education Id|\n" +
+                                    "    | 8-Education Search By Name       |" + "16-Group Search By Name           |\n" +
+                                    "    |                                  |" + "17-Filter By Education Name Async |\n" +
                                     "    ----------------------------------------------------------------------\n");
 
 

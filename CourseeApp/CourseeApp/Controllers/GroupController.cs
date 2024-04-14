@@ -10,6 +10,8 @@ using Service.Helpers.Constants;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Extensions;
 using Repository.DTOs.Group;
+using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CourseeApp.Controllers
 {
@@ -36,14 +38,37 @@ namespace CourseeApp.Controllers
             }
 
         }
-        public async Task GetAllGroupWithEducationAsync()
+        public async Task GetAllGroupWithEducationIdAsync()
         {
-            var groups = await _groupService.GetAllWithEducationAsync();
-            foreach (var item in groups)
+            var edu=await _educationService.GetAllAsync();
+            foreach(var item in edu)
             {
-                string result = item.Group + "-" + string.Join(",", item.Education);
-                Console.WriteLine(result);
+                Console.WriteLine("Id-"+item.Id+" Name-"+item.Name);
             }
+            Id: ConsoleColor.DarkYellow.WriteConsole("Choose Id");
+            string idStr=Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(idStr))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Id;
+            }
+            int id;
+            bool isCorrectIdFormat=int.TryParse(idStr, out id);
+            if (isCorrectIdFormat)
+            {
+                var groups = await _groupService.GetGroupByEducationIdAsync(id);
+                foreach (var item in groups)
+                {
+                    string result = $"Name-{ item.Name} CreatedDate+{item.CreatedDate}" ; 
+                    Console.WriteLine(result);
+                }
+            }
+            else
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                goto Id;
+            }
+            
         }
         public async Task CreateAsync()
         {
@@ -84,6 +109,11 @@ namespace CourseeApp.Controllers
 
             Capacity: Console.WriteLine("Add Group Capacity");
                 string capacityStr = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(capacityStr))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Capacity;
+                }
                 int capacity;
                 bool isCorrectCapacityFormat = int.TryParse(capacityStr, out capacity);
                 if (isCorrectCapacityFormat)
@@ -113,6 +143,11 @@ namespace CourseeApp.Controllers
 
         Id: Console.WriteLine("Select the id you want to delete");
             string idStr = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(idStr))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Id;
+            }
             int id;
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
             if (isCorrectIdFormat)
@@ -133,6 +168,11 @@ namespace CourseeApp.Controllers
         {
         Id: Console.WriteLine("Add Id");
             string idStr = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(idStr))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Id;
+            }
             int id;
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
             if (isCorrectIdFormat)
@@ -157,6 +197,11 @@ namespace CourseeApp.Controllers
             bool update = true;
         Id: ConsoleColor.Yellow.WriteConsole("Select the Id you want to update:");
             string idStr = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(idStr))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Id;
+            }
             int id;
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
             if (isCorrectIdFormat)
@@ -170,7 +215,7 @@ namespace CourseeApp.Controllers
                         throw new NotFoundException(ResponseMessages.DataNotFound);
                         //ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                     }
-                    Console.WriteLine("Enter new Group name ");
+                    Group:Console.WriteLine("Enter new Group name ");
                     string newName = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newName))
                     {
@@ -183,18 +228,32 @@ namespace CourseeApp.Controllers
                                 update = false;
                             }
                         }
+                        else
+                        {
+                            ConsoleColor.Red.WriteConsole("This group is already available");
+                            goto Group;
+                        }
 
                     }
-                    Console.WriteLine("Enter new Education");
+                    Education:Console.WriteLine("Enter new Education");
                     string newEducation = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newEducation))
                     {
-                        if (data.Result.Education.Name.ToLower().Trim() != newEducation.ToLower().Trim())
+                        var edu = await _educationService.SearchByNameAsync(newEducation);
+                        if (edu.Count != 0)
                         {
-                            data.Result.Education.Name = newEducation;
-                            update = false;
+                            if (data.Result.Education.Name.ToLower().Trim() != newEducation.ToLower().Trim())
+                            {
+                                data.Result.Education.Name = newEducation;
+                                update = false;
+                            }
                         }
 
+                        else
+                        {
+                            ConsoleColor.Red.WriteConsole("This Education is not Exist");
+                            goto Education;
+                        }
 
                     }
                     Console.WriteLine("Enter new capacity");
@@ -253,12 +312,22 @@ namespace CourseeApp.Controllers
         {
             try
             {
-                Console.WriteLine("Enter search text");
+                Text: Console.WriteLine("Enter search text");
                 string seacrhText = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(seacrhText))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Text;
+                }
                 var data = await _groupService.SearchByNameAsync(seacrhText);
+                if (data.Count==0)
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                }
                 foreach (var item in data)
                 {
-                    Console.WriteLine("Group-" + item.Name + " Education-" + item.Education + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
+                    var education = await _educationService.GetByIdAsync(item.EducationId);
+                    Console.WriteLine("Group-" + item.Name + " Education-" + education.Name + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
                 }
             }
             catch (Exception ex)
@@ -272,8 +341,13 @@ namespace CourseeApp.Controllers
         {
             try
             {
-                ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
+                Choose: ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
                 string text = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Choose;
+                }
                 var datas = await _groupService.SortWithCapacityAsync(text);
                 foreach (var data in datas)
                 {
@@ -287,7 +361,7 @@ namespace CourseeApp.Controllers
             }
         }
         public async Task FilterByEducationNameAsync()
-        {
+         {
             
 
             var datas = await _educationService.GetAllAsync();
@@ -295,10 +369,19 @@ namespace CourseeApp.Controllers
             {
                 Console.WriteLine("Id-" + data.Id + " Education-" + data.Name);
             }
-        Id: ConsoleColor.Yellow.WriteConsole("Add Education Name");
+            Name: ConsoleColor.Yellow.WriteConsole("Add Education Name");
             string name = Console.ReadLine();
-            
-                var response = await _educationService.SearchByNameAsync(name);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Name;
+            }
+            var response = await _educationService.SearchByNameAsync(name);
+
+            if (response.Count==0)
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+            }
             foreach (var item in response)
             {
                

@@ -22,7 +22,7 @@ namespace Service.Helpers.Enums
         GroupGetAll,
         GroupSortWithCapacity,
         GroupGetById,
-        GetAllGroupWithEducation,
+        GetAllGroupWithEducationId,
         GroupSearchByName,
         FilterByEducationName
 

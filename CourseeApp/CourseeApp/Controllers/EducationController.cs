@@ -11,6 +11,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Service.Helpers.Extensions;
 using Service.Helpers.Exceptions;
 using Service.Helpers.Constants;
+using System.Xml.Linq;
 
 namespace CourseeApp.Controllers
 {
@@ -27,11 +28,20 @@ namespace CourseeApp.Controllers
         }
         public async Task GetAllAsync()
         {
-            var data=await _educationService.GetAllAsync();
-            foreach (var item in data)
+            try
             {
-                 Console.WriteLine("Education-" + item.Name + " Color-" + item.Color + " CreatedDate-" + item.CreatedDate);
+                var data = await _educationService.GetAllAsync();
+                foreach (var item in data)
+                {
+                    Console.WriteLine("Education-" + item.Name + " Color-" + item.Color + " CreatedDate-" + item.CreatedDate);
+                }
             }
+            catch (Exception ex)
+            {
+
+                ConsoleColor.Red.WriteConsole(ex.Message);
+            }
+           
             
         }
         public async Task GetAllWithGroupAsync()
@@ -48,69 +58,130 @@ namespace CourseeApp.Controllers
         }
         public async Task CreateAsync()
         {
-            Education:Console.WriteLine("Add Education");
-             string name =Console.ReadLine();
-            var data = await _educationService.SearchByNameAsync(name);
-            if (data.Count!=0)
+            try
             {
-                ConsoleColor.Red.WriteConsole("The Education already exists ");
-                goto Education;
-            }
-             Console.WriteLine("Add Education color");
-             string color = Console.ReadLine();
+            Education: Console.WriteLine("Add Education");
+                string name = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Education;
+                }
+                var data = await _educationService.SearchByNameAsync(name);
+                if (data.Count != 0)
+                {
+                    ConsoleColor.Red.WriteConsole("The Education already exists ");
+                    goto Education;
+                }
+            Color: Console.WriteLine("Add Education color");
+                string color = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(color))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Color;
+                }
 
+                DateTime time = DateTime.Now;
+
+
+                await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), CreatedDate = time });
+
+
+                ConsoleColor.Green.WriteConsole("Data succesfuly added");
             
-             DateTime time = DateTime.Now;
-
+            }
+            catch (Exception ex )
+            {
+                ConsoleColor.Red.WriteConsole(ex.Message);
+            }
            
-            await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), CreatedDate =time });
-
-
-           ConsoleColor.Green.WriteConsole("Data succesfuly added");
         }
 
         public async Task DeleteAsync()
         {
-            var data = await _educationService.GetAllAsync();
-            foreach (var item in data)
+            try
             {
-                Console.WriteLine("Id-"+item.Id+" Name-"+item.Name + " CreatedDate-" + item.CreatedDate);
-            }
+                var data = await _educationService.GetAllAsync();
+                foreach (var item in data)
+                {
+                    Console.WriteLine("Id-" + item.Id + " Name-" + item.Name + " CreatedDate-" + item.CreatedDate);
+                }
 
-           Id: Console.WriteLine("Select the id you want to delete");
-            string idStr = Console.ReadLine();
-            int id;
-            bool isCorrectIdFormat = int.TryParse(idStr, out id);
-            if (isCorrectIdFormat)
-            {
-                var response=await _educationService.GetByIdAsync(id);
-                _educationService.DeleteAsync(response);
+            Id: Console.WriteLine("Select the id you want to delete");
+                string idStr = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(idStr))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Id;
+                }
+                int id;
+                bool isCorrectIdFormat = int.TryParse(idStr, out id);
+                if (isCorrectIdFormat)
+                {
+                    var response = await _educationService.GetByIdAsync(id);
+                    if (response is null)
+                    {
+                        ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                    }
+                    else
+                    {
+                        _educationService.DeleteAsync(response);
+                        ConsoleColor.Green.WriteConsole("Data succesfully deleted");
+                    }
+
+                }
+                else
+                {
+                    goto Id;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                goto Id;
+                ConsoleColor.Red.WriteConsole(ex.Message);
             }
+           
 
             
         }
         public async Task GetByIdAsync()
 
         {
-        Id: Console.WriteLine("Add Id");
-            string idStr = Console.ReadLine();
-            int id;
-            bool isCorrectIdFormat = int.TryParse(idStr, out id);
-            if (isCorrectIdFormat)
-            {
-               var item= await _educationService.GetByIdAsync(id);
-                 Console.WriteLine("Education-" + item.Name + " Color-" + item.Color + " CreatedDate-" + item.CreatedDate);
+         try
+           {
+            Id: Console.WriteLine("Add Id");
+                string idStr = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(idStr))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Id;
+                }
+                int id;
+                bool isCorrectIdFormat = int.TryParse(idStr, out id);
+                if (isCorrectIdFormat)
+                {
+                    var item = await _educationService.GetByIdAsync(id);
+                    if (item is null)
+                    {
+                        ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                        goto Id;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Education-" + item.Name + " Color-" + item.Color + " CreatedDate-" + item.CreatedDate);
+                    }
+
+                }
+                else
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                    goto Id;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
-                goto Id;
+                ConsoleColor.Red.WriteConsole(ex.Message);
+                
             }
-            
         }
         public async Task UpdateAsync()
         {
@@ -122,6 +193,11 @@ namespace CourseeApp.Controllers
             bool update = true;
         Id: ConsoleColor.Yellow.WriteConsole("Select the Id you want to update:");
             string idStr = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(idStr))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto Id;
+            }
             int id;
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
             if (isCorrectIdFormat)
@@ -197,9 +273,19 @@ namespace CourseeApp.Controllers
 
         public async Task SearchByNameAsync()
         {
-             Console.WriteLine("Enter search text");
+            SeacrhText:Console.WriteLine("Enter search text");
             string seacrhText=Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(seacrhText))
+            {
+                ConsoleColor.Red.WriteConsole("Input can't be empty");
+                goto SeacrhText;
+            }
             var data =await _educationService.SearchByNameAsync(seacrhText);
+            if (data.Count==0)
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                goto SeacrhText;
+            }
            foreach (var item in data)
             {
                 Console.WriteLine("Education-"+item.Name+" Color-"+item.Color+" CreatedDate-"+item.CreatedDate);
@@ -207,13 +293,33 @@ namespace CourseeApp.Controllers
         }
         public async Task SortWithCreatedDateAsync()
         {
-            ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
-            string text=Console.ReadLine();
-            var datas =await _educationService.SortWithCreatedDateAsync(text);
-            foreach (var data in datas)
+            try
             {
-                Console.WriteLine("Name-"+data.Name+" Color-"+data.Color+" CreateDate-"+data.CreatedDate);
+            Text: ConsoleColor.Cyan.WriteConsole("Choose Sort Type\n Asc or Desc");
+                string text = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    ConsoleColor.Red.WriteConsole("Input can't be empty");
+                    goto Text;
+                }
+                var datas = await _educationService.SortWithCreatedDateAsync(text);
+                if (datas.Count == 0)
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                    goto Text;
+                }
+                foreach (var data in datas)
+                {
+                    Console.WriteLine("Name-" + data.Name + " Color-" + data.Color + " CreateDate-" + data.CreatedDate);
+                }
             }
+            catch (Exception )
+            {
+
+                ConsoleColor.Red.WriteConsole("incorrect operation");
+               
+            }
+            
            
         }
 

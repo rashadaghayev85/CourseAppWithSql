@@ -10,6 +10,8 @@ namespace Repository.Repositories.Interfaces
     public interface IUserRepository:IBaseRepository<User>
     {
         Task<bool> Login(string emailOrUserName, string password);
-        Task Register(User user); 
+       
+        Task<User>GetByUsernameOrEmailAsync(string usernameOrEmail); 
+        
     }
 }

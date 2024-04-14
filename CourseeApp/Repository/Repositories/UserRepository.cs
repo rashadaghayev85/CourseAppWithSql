@@ -17,24 +17,27 @@ namespace Repository.Repositories
         {
             _context = new AppDbContext();
         }
+
+        public async Task<User> GetByUsernameOrEmailAsync(string usernameOrEmail)
+        {
+            return await _context.Users.FirstOrDefaultAsync(m => m.UserName == usernameOrEmail || m.Email == usernameOrEmail);
+        }
+
         public async Task<bool> Login(string emailOrUserName,string password)
         {
             var data = await _context.Users.FirstOrDefaultAsync(m => m.Email == emailOrUserName && m.UserName == emailOrUserName||m.Password==password);
         if (data is null)
             {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
         }
 
        
 
-        public async Task Register(User user)
-        {
-           _context.Users.Add(user);    
-        }
+       
     }
 }

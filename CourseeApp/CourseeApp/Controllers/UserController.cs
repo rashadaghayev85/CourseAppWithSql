@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Service.Helpers.Extensions;
 using Service.Helpers.Constants;
 using Domain.Models;
+using System.Xml.Linq;
 
 namespace CourseeApp.Controllers
 {
@@ -25,9 +26,9 @@ namespace CourseeApp.Controllers
             {
                 Console.WriteLine("Enter Email Or Username");
                 string emailOrUserName = Console.ReadLine();
-                Console.WriteLine("Enter Email Or Username");
+                Console.WriteLine("Enter Password");
                 string password = Console.ReadLine();
-                var login = await _userService.Login(emailOrUserName,password);
+                var login = await _userService.Login(emailOrUserName, password);
 
                 if (!login)
                 {
@@ -41,26 +42,98 @@ namespace CourseeApp.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 ConsoleColor.Red.WriteConsole(ex.Message);
                 return false;
             }
-           
-           
+
+
         }
         public async Task Register()
         {
-            Console.WriteLine("Enter FullName");
+        FullName: Console.WriteLine("Enter FullName");
             string fullName = Console.ReadLine();
-            Console.WriteLine("Enter Email");
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.EmptyString);
+                goto FullName;
+            }
+            foreach (var item in fullName)
+            {
+                if (char.IsDigit(item)||char.IsPunctuation(item)||char.IsSymbol(item))
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                    goto FullName;
+                }
+            }
+            
+        Email: Console.WriteLine("Enter Email");
             string email = Console.ReadLine();
-            Console.WriteLine("Enter Username");
-            string username = Console.ReadLine();
-            Console.WriteLine("Enter Password");
-            string password = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.EmptyString);
+                goto Email;
+            }
+            if (!email.Contains("@"))
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                goto Email;
 
-            _userService.Register(new User {FullName=fullName,Email=email,UserName=username,Password=password });
-            ConsoleColor.Green.WriteConsole("Register succesfully");
+            }
+
+
+            var response = await _userService.GetByUsernameOrEmailAsync(email);
+            if (response is not null)
+            {
+                ConsoleColor.Red.WriteConsole("This email is no longer available");
+                goto Email;
+            }
+        Username: Console.WriteLine("Enter Username");
+            string username = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.EmptyString);
+                goto Username;
+            }
+            var result = await _userService.GetByUsernameOrEmailAsync(username);
+            if (result is not null)
+            {
+                ConsoleColor.Red.WriteConsole("This Username is no longer available");
+                goto Username;
+            }
+        Password: Console.WriteLine("Enter Password");
+            string password = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.EmptyString);
+                goto Password;
+            }
+            if (password.Length >= 8)
+            {
+                DateTime time= DateTime.Now;    
+                _userService.Register(new User { FullName = fullName, Email = email, UserName = username, Password = password,CreatedDate=time });
+                ConsoleColor.Green.WriteConsole("Register succesfully");
+            }
+            else
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                goto Password;
+            }
+
+            
         }
+        public async Task GetAll()
+        {
+            var datas = await _userService.GetAllAsync();
+            foreach (var data in datas)
+            {
+                Console.WriteLine("User FullName-" + data.FullName + " UserName-" + data.UserName + " User Email-" + data.Email);
+            }
+        }
+        //public async Task DeleteAsync()
+        //{
+
+        //    _userService.DeleteAsync();
+        //}       
     }
 }
