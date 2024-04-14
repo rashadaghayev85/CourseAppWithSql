@@ -58,9 +58,13 @@ namespace CourseeApp.Controllers
             if (isCorrectIdFormat)
             {
                 var groups = await _groupService.GetGroupByEducationIdAsync(id);
+                if (groups.Count==0)
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                }
                 foreach (var item in groups)
                 {
-                    string result = $"Name-{ item.Name} CreatedDate+{item.CreatedDate}" ; 
+                    string result = $"Name-{ item.Name} CreatedDate-{item.CreatedDate}" ; 
                     Console.WriteLine(result);
                 }
             }
@@ -136,7 +140,12 @@ namespace CourseeApp.Controllers
                     ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
                     goto Capacity;
                 }
-            }     
+            }
+            else
+            {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                goto EducationName;
+            }
             
         }
 
@@ -145,10 +154,11 @@ namespace CourseeApp.Controllers
             var data = await _groupService.GetAllAsync();
             foreach (var item in data)
             {
+               
                 Console.WriteLine("Id-" + item.Id + " Name-" + item.Name + " CreatedDate-" + item.CreatedDate);
             }
 
-        Id: Console.WriteLine("Select the id you want to delete");
+        Id: ConsoleColor.Yellow.WriteConsole("Select the id you want to delete");
             string idStr = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(idStr))
             {
@@ -160,20 +170,33 @@ namespace CourseeApp.Controllers
             if (isCorrectIdFormat)
             {
                 Group response = await _groupService.GetByIdAsync(id);
-               await _groupService.DeleteAsync(response);
-                ConsoleColor.Green.WriteConsole(ResponseMessages.SuccesOperation);
+                if (response is not null)
+                {
+                    await _groupService.DeleteAsync(response);
+                    ConsoleColor.Green.WriteConsole(ResponseMessages.SuccesOperation);
+                }
+                else
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                }
+              
             }
             else
             {
+                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
                 goto Id;
             }
 
 
         }
         public async Task GetByIdAsync()
-
         {
-        Id: Console.WriteLine("Add Id");
+            var gru = await _groupService.GetAllAsync();
+            foreach (var item in gru)
+            {
+                ConsoleColor.DarkMagenta.WriteConsole("Id-" + item.Id + " Name-" + item.Name);
+            }
+        Id: ConsoleColor.Yellow.WriteConsole("Enter Id");
             string idStr = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(idStr))
             {
@@ -185,6 +208,11 @@ namespace CourseeApp.Controllers
             if (isCorrectIdFormat)
             {
                 var item = await _groupService.GetByIdAsync(id);
+                if (item is null )
+                {
+                    ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                    goto Id;
+                }
                 Console.WriteLine("Group-" + item.Name + " Education-" + item.Education +" Capacity-"+item.Capacity+" CreatedDate-" + item.CreatedDate);
             }
             else
@@ -199,7 +227,8 @@ namespace CourseeApp.Controllers
             var datas = await _groupService.GetAllAsync();
             foreach (var item in datas)
             {
-                Console.WriteLine("Id-" + item.Id + "Group-" + item.Name + " Education-" + item.Education + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
+                var education = await _educationService.GetByIdAsync(item.EducationId);
+                Console.WriteLine("Id-"+item.Id+" Group-" + item.Name + " Capacity-" + item.Capacity + " Education-" + education.Name + " CreatedDate-" + item.CreatedDate);
             }
             bool update = true;
         Id: ConsoleColor.Yellow.WriteConsole("Select the Id you want to update:");
@@ -216,11 +245,13 @@ namespace CourseeApp.Controllers
                 try
                 {
                     var data = _groupService.GetByIdAsync(id);
+                    
                      //Console.WriteLine(data.Result.Name);
-                    if (data is null)
+                    if (data.Result is null)
                     {
                         ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                         //ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                        goto Id;
                     }
                     Group:Console.WriteLine("Enter new Group name ");
                     string newName = Console.ReadLine();
@@ -263,7 +294,7 @@ namespace CourseeApp.Controllers
                         }
 
                     }
-                    Console.WriteLine("Enter new capacity");
+                  Capacity: Console.WriteLine("Enter new capacity");
                     string capacityStr = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(capacityStr))
                     {
@@ -279,6 +310,11 @@ namespace CourseeApp.Controllers
                             }
 
                         }
+                        else
+                        {
+                            ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                            goto Capacity;
+                        }
                     }
 
                     if (update)
@@ -287,7 +323,7 @@ namespace CourseeApp.Controllers
                     }
                     else
                     {
-                        data.Result.CreatedDate = DateTime.Now;
+                       // data.Result.CreatedDate = DateTime.Now;
                         _groupService.UpdateAsync(data.Result);
                         ConsoleColor.Green.WriteConsole("Data update succes");
 
@@ -319,7 +355,7 @@ namespace CourseeApp.Controllers
         {
             try
             {
-                Text: Console.WriteLine("Enter search text");
+                Text:ConsoleColor.Yellow.WriteConsole("Enter search text");
                 string seacrhText = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(seacrhText))
                 {
@@ -383,22 +419,33 @@ namespace CourseeApp.Controllers
                 ConsoleColor.Red.WriteConsole("Input can't be empty");
                 goto Name;
             }
-            var response = await _educationService.SearchByNameAsync(name);
+            var response = await _educationService.GetByNameAsync(name);
 
-            if (response.Count==0)
+            if (response is null )
             {
                 ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
+                goto Name;
             }
-            foreach (var item in response)
+           
+               
+                var groups = await _groupService.GetGroupByEducationIdAsync(response.Id);
+            if (groups != null)
             {
-               
-                var education = await _groupService.GetByIdAsync(item.Id);
-               
-                    Console.WriteLine("Group-" + education.Name + " Capacity-" + education.Capacity  + " CreatedDate-" + education.CreatedDate);
+                foreach (var item in groups)
+                {
+                    Console.WriteLine("Group-" + item.Name + " Capacity-" + item.Capacity + " CreatedDate-" + item.CreatedDate);
 
-         
-
+                }
             }
+
+            else
+            {
+                ConsoleColor.Red.WriteConsole("Incorrect Education Name");
+                goto Name;
+            }
+
+
+            
 
 
         }

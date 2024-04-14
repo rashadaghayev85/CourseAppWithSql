@@ -231,10 +231,18 @@ namespace CourseeApp.Controllers
                         return;
                         //ConsoleColor.Red.WriteConsole(ResponseMessages.DataNotFound);
                     }
-                    Console.WriteLine("Enter new Education ");
+                    Education: Console.WriteLine("Enter new Education ");
                     string newEducation = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(newEducation))
                     {
+                        foreach (var item in newEducation)
+                        {
+                            if (char.IsDigit(item) || char.IsPunctuation(item) || char.IsSymbol(item))
+                            {
+                                ConsoleColor.Red.WriteConsole(ResponseMessages.IncorrectFormat);
+                                goto Education;
+                            }
+                        }
                         var response = await _educationService.GetByNameAsync(newEducation);
                         if (response is null)
                         {
@@ -243,6 +251,11 @@ namespace CourseeApp.Controllers
                                 data.Result.Name = newEducation;
                                 update = false;
                             }
+                        }
+                        else
+                        {
+                            ConsoleColor.Red.WriteConsole("This education is exist");
+                            goto Education;
                         }
 
                     }
@@ -258,13 +271,21 @@ namespace CourseeApp.Controllers
                                 goto Color;
                             }
                         }
-                        if (data.Result.Color.ToLower().Trim() != newColor.ToLower().Trim())
+                        var response = await _educationService.GetByColorAsync(newColor);
+                        if (response is null)
                         {
-                            data.Result.Color = newColor;
-                            update = false;
+                            if (data.Result.Color.ToLower().Trim() != newColor.ToLower().Trim())
+                            {
+                                data.Result.Color = newColor;
+                                update = false;
+                            }
                         }
 
-
+                        else
+                        {
+                            ConsoleColor.Red.WriteConsole("This color is now available");
+                            goto Color;
+                        }
 
                     }
 
@@ -274,7 +295,7 @@ namespace CourseeApp.Controllers
                     }
                     else
                     {
-                        data.Result.CreatedDate = DateTime.Now;
+                        //data.Result.CreatedDate = DateTime.Now;
                         _educationService.UpdateAsync(data.Result);
                         ConsoleColor.Green.WriteConsole("Data update succes");
                     }
